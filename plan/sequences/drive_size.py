@@ -24,8 +24,9 @@ drive_map = { "IOX-SAN-2U-6TB": '6.0 TB', "IOX-SAN-2U-8TB": '8.0 TB', "IOX-SAN-2
 def drive_size_test(test, SAS):
     results = {}
     results['drive-expected'] = _station['drive']
+    print(results['drive-expected'])
     results['size-expected'] = drive_map.get(_station['drive'], 'None')
-
+    print(results['size-expected'])
     test.logger.info('Get drive capacity for all SAS drives')
     get_drive_count = SAS.Get_Qty_SAS_Drives()
     drive_raw = SAS.Get_Drive_Health()
@@ -47,12 +48,12 @@ def drive_size_test(test, SAS):
         for each in range(0,len(drive_data)):
             for each2 in drive_data[each]:
                 results[each2].append(drive_raw[each][each2])
-        test.measurements['drive-expected'] = results['drive-expected']
-        test.measurements['size-expected'] = results['size-expected']
-        test.measurements['size-valid'] = all([ x == results['size-expected'] for x in results['capacity']])
-    
     except:
         return PhaseResult.FAIL_AND_CONTINUE
+    test.measurements['drive-expected'] = results['drive-expected']
+    test.measurements['size-expected'] = results['size-expected']
+    test.measurements['size-valid'] = all([ x == results['size-expected'] for x in results['capacity']])
+    
     
 
 
