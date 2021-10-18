@@ -54,12 +54,14 @@ def drive_health(test, SAS):
         
     except:
         return PhaseResult.FAIL_AND_CONTINUE
-    
-    test.measurements['group_errors-valid'] =  all([x == 0 for x in results['group_errors']])
+    test_list = [int(i) for i in results['group_errors']]
+    test.measurements['group_errors-valid'] =  all([x == 0 for x in test_list])
+    test_list = [int(i) for i in results['power_on']]
+
     if test.test_record.metadata['test_description'] == 'B Stock':
-        test.measurements['power_on-valid'] = all([x < 43800 for x in results['power_on']])
+        test.measurements['power_on-valid'] = all([x < 43800 for x in test_list])
     else:
-        test.measurements['power_on-valid'] = all([x < 2190 for x in results['power_on']])
+        test.measurements['power_on-valid'] = all([x < 2190 for x in test_list])
     test.measurements['health-valid'] = all([x == 'PASS' for x in results['health']])
     test.measurements['SSD-valid'] = all([x == 'HDD' for x in results['SSD']])
     test.measurements['interface-valid'] = all([x == 'sas' for x in results['interface']])
