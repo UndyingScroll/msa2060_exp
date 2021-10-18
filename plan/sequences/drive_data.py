@@ -51,17 +51,19 @@ def drive_health(test, SAS):
         for each in range(0,len(drive_data)):
             for each2 in drive_data[each]:
                 results[each2].append(drive_data[each][each2])
-        test.measurements['group_errors-valid'] =  all([x == 0 for x in results['group_errors']])
-        if test.test_record.metadata['test_description'] == 'B Stock':
-            test.measurements['power_on-valid'] = all([x < 43800 for x in results['power_on']])
-        else:
-            test.measurements['power_on-valid'] = all([x < 2190 for x in results['power_on']])
-        test.measurements['health-valid'] = all([x == 'OK' for x in results['health']])
-        test.measurements['SSD-valid'] = all([x == 'HDD' for x in results['SSD']])
-        test.measurements['interface-valid'] = all([x == 'sas' for x in results['interface']])
-
-        for each in keywords:
-            test.measurements[each] = results[each]
+        
     except:
         return PhaseResult.FAIL_AND_CONTINUE
+    
+    test.measurements['group_errors-valid'] =  all([x == 0 for x in results['group_errors']])
+    if test.test_record.metadata['test_description'] == 'B Stock':
+        test.measurements['power_on-valid'] = all([x < 43800 for x in results['power_on']])
+    else:
+        test.measurements['power_on-valid'] = all([x < 2190 for x in results['power_on']])
+    test.measurements['health-valid'] = all([x == 'PASS' for x in results['health']])
+    test.measurements['SSD-valid'] = all([x == 'HDD' for x in results['SSD']])
+    test.measurements['interface-valid'] = all([x == 'sas' for x in results['interface']])
+
+    for each in keywords:
+        test.measurements[each] = results[each]
 
