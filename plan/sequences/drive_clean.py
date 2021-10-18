@@ -33,13 +33,10 @@ def drive_clean_test(test, SAS):
     try:
 
         for each in range(0,get_drive_count):
-            
-            
-            drivepath = drive_data['path'][each]
+            drivepath = drive_data[each]['path']
             result = metaclean(drivepath)
             test.logger.info('Clean meta of drive ' + drivepath + 'result :'+ str(result))
             results.append(result)
-    
     except:
         return PhaseResult.FAIL_AND_CONTINUE
 
