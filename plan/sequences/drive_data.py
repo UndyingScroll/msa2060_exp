@@ -63,7 +63,7 @@ def drive_health(test, SAS):
     else:
         test.measurements['power_on-valid'] = all([x < 2190 for x in test_list])
     test.measurements['health-valid'] = all([x == 'PASS' for x in results['health']])
-    test.measurements['SSD-valid'] = all([x == 'HDD' for x in results['SSD']])
+    test.measurements['SSD-valid'] = all([x == False for x in results['SSD']])
     test.measurements['interface-valid'] = all([x == 'sas' for x in results['interface']])
 
     for each in keywords:
