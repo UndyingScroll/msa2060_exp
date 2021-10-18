@@ -19,7 +19,6 @@ drive_map = { "IOX-SAN-2U-6TB": '6.00 TB', "IOX-SAN-2U-8TB": '8.00 TB', "IOX-SAN
 @htf.measures(htf.Measurement('drive-detected').doc("'SAS drives detected'"))
 @htf.measures(htf.Measurement('drive-expected'))
 @htf.measures(htf.Measurement('size-expected'))
-@htf.measures(htf.Measurement('size'))
 @htf.measures(htf.Measurement('size-valid').equals(True))
 @plann.plug(SAS = SASPlug)
 def drive_size_test(test, SAS):
@@ -48,6 +47,7 @@ def drive_size_test(test, SAS):
             for each2 in drive_data[each]:
                 results[each2].append(drive_data[each][each2])
     except:
+        test.logger.info('SAS drive size exception')
         return PhaseResult.FAIL_AND_CONTINUE
     test.measurements['drive-detected'] = results['capacity']
     test.measurements['drive-expected'] = results['drive-expected']
