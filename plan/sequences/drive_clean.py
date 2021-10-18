@@ -35,8 +35,7 @@ def drive_clean_test(test, SAS):
         for each in range(0,get_drive_count):
             
             
-            health = ast.literal_eval(drive_data[each])
-            drivepath = health['path']
+            drivepath = drive_data['path'][each]
             result = metaclean(drivepath)
             test.logger.info('Clean meta of drive ' + drivepath + 'result :'+ str(result))
             results.append(result)

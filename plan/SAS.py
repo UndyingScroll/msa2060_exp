@@ -52,7 +52,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 def DUT(test, greet):
     
     response = greet.prompt_tester_information()
-
+    reportpath = '/results'
    
     if 'serialnumber' not in response:
         return PhaseResult.REPEAT
@@ -73,7 +73,7 @@ def DUT(test, greet):
 
     test.test_record.metadata['test_version'] ='1.0'
     test.test_record.metadata['user_id'] = 'default'
-    test.test_record.metadata['path'] = 'reports'
+    test.test_record.metadata['path'] = reportpath
     
     
     test.dut_id = response['serialnumber']
