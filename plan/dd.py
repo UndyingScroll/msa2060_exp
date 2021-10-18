@@ -4,6 +4,8 @@ import sys
 def metaclean(path):
     rcode = 0
     ofstring = 'of=' + path
+    sdcmd = ['echo','smart','|','sudo','-S','pwd']
+    sdresult = run(sdcmd, stdout = PIPE, stderr = PIPE, universal_newlines = True)
     szcmd = ['sudo', 'blockdev', '--getsz', path]
     # find the end of the drive
     szresult = run(szcmd, stdout = PIPE, stderr = PIPE, universal_newlines = True)
