@@ -1,26 +1,25 @@
-from subprocess import run, PIPE
+import subprocess
 import sys
 
 def metaclean(path):
-    rcode = 0
+    rcode = []
     ofstring = 'of=' + path
-    sdcmd = ['echo','smart','|','sudo','-S','pwd']
-    sdresult = run(sdcmd, stdout = PIPE, stderr = PIPE, universal_newlines = True)
-    szcmd = ['sudo', 'blockdev', '--getsz', path]
     # find the end of the drive
-    szresult = run(szcmd, stdout = PIPE, stderr = PIPE, universal_newlines = True)
-    rcode = rcode + szresult.returncode
+    szcmd = ['sudo', 'blockdev', '--getsz', path]
+    szresult = subprocess.Popen(szcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate(input=b'smart\n')
+    rcode.append(szresult[0].decode('utf-8'))
     # zero first 16 miB
     ddcmd = ['sudo','dd','if=/dev/zero',ofstring,'bs=4096','count=4096']
-    ddresult = run(ddcmd, stdout = PIPE, stderr = PIPE, universal_newlines = True)
-    rcode = rcode + ddresult.returncode
+    ddresult = subprocess.Popen(ddcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate(input=b'smart\n')
+    rcode.append(ddresult[0].decode('utf-8'))
 
     # zero end of drive
 
-    seek = int(szresult.stdout)-1024
+    seek = int(szresult[0].decode('utf-8'))-1024
     seekstr = 'seek=' + str(seek) 
+    print(seekstr)
     ddcmd = ['sudo', 'dd', 'if=/dev/zero', ofstring,'bs=512', seekstr, 'count=4096']
 
-    ddresult = run(ddcmd, stdout = PIPE, stderr = PIPE, universal_newlines = True)
-    rcode = rcode + ddresult.returncode
+    ddresult = subprocess.Popen(ddcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate(input=b'smart\n')
+    rcode.append(ddresult[0].decode('utf-8'))
     return(rcode)
