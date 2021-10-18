@@ -1,5 +1,5 @@
 from spintop_openhtf import TestPlan,  conf
-import time, requests, json, hashlib
+import time, requests, json, hashlib, ast
 from plan.station import _station
 import openhtf as htf
 from openhtf import PhaseResult
@@ -29,23 +29,30 @@ def drive_size_test(test, SAS):
     test.logger.info('Get drive capacity for all SAS drives')
     get_drive_count = SAS.Get_Qty_SAS_Drives()
     drive_raw = SAS.Get_Drive_Health()
+    drive_data = []
+    test.logger.info(drive_raw)
+
+    for each in drive_raw:
+        drive_data.append(ast.literal_eval(each))
+    
+    test.logger.info(drive_data)
     test.measurements['drives-detected'] = get_drive_count
 
-    test.logger.info(drive_raw)
-    if drive_raw == False:   
+    if drive_data == False:   
         test.logger.info('No SAS data returned.')
         return PhaseResult.FAIL_AND_CONTINUE
     try:
-        for each in drive_raw[0]:
+        for each in drive_data[0]:
             results[each] = []
-        for each in range(0,len(drive_raw)):
-            for each2 in drive_raw[each]:
+        for each in range(0,len(drive_data)):
+            for each2 in drive_data[each]:
                 results[each2].append(drive_raw[each][each2])
+        test.measurements['drive-expected'] = results['drive-expected']
+        test.measurements['size-expected'] = results['size-expected']
+        test.measurements['size-valid'] = all([ x == results['size-expected'] for x in results['capacity']])
+    
     except:
         return PhaseResult.FAIL_AND_CONTINUE
-    test.measurements['drive-expected'] = results['drive-expected']
-    test.measurements['size-expected'] = results['size-expected']
-    test.measurements['size-valid'] = all([ x == results['size-expected'] for x in results['capacity']])
     
 
 

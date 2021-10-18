@@ -1,5 +1,5 @@
 from spintop_openhtf import TestPlan,  conf
-import time, requests, json, hashlib
+import time, requests, json, hashlib, ast
 from plan.station import _station, _drives
 import openhtf as htf
 from openhtf import PhaseResult
@@ -34,18 +34,23 @@ def drive_health(test, SAS):
     test.logger.info('Get drive health for all SAS drives')
     get_drive_count = SAS.Get_Qty_SAS_Drives()
     drive_raw = SAS.Get_Drive_Health()
-    
+    drive_data = []
     test.logger.info(drive_raw)
+
+    for each in drive_raw:
+        drive_data.append(ast.literal_eval(each))
+    
+    test.logger.info(drive_data)
     test.measurements['drives-detected'] = get_drive_count
-    if drive_raw == False:   
+    if drive_data == False:   
         test.logger.info('No SAS data returned.')
         return PhaseResult.FAIL_AND_CONTINUE
     try:
-        for each in drive_raw[0]:
+        for each in drive_data[0]:
             results[each] = []
-        for each in range(0,len(drive_raw)):
-            for each2 in drive_raw[each]:
-                results[each2].append(drive_raw[each][each2])
+        for each in range(0,len(drive_data)):
+            for each2 in drive_data[each]:
+                results[each2].append(drive_data[each][each2])
         test.measurements['group_errors-valid'] =  all([x == 0 for x in results['group_errors']])
         if test.test_record.metadata['test_description'] == 'B Stock':
             test.measurements['power_on-valid'] = all([x < 43800 for x in results['power_on']])
