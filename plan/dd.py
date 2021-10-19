@@ -10,7 +10,7 @@ def metaclean(path):
     rcode.append(szresult[0].decode('utf-8'))
     # zero first 16 miB
     ddcmd = ['sudo','dd','if=/dev/zero',ofstring,'bs=4096','count=4096']
-    ddresult = subprocess.Popen(ddcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE))#.communicate(input=b'smart\n')
+    ddresult = subprocess.Popen(ddcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate(input=b'smart\n')
     rcode.append(ddresult[1].decode('utf-8'))
 
     # zero end of drive
@@ -19,6 +19,6 @@ def metaclean(path):
     seekstr = 'seek=' + str(seek) 
     ddcmd = ['sudo', 'dd', 'if=/dev/zero', ofstring,'bs=512', seekstr, 'count=1024']
 
-    ddresult = subprocess.Popen(ddcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE))#.communicate(input=b'smart\n')
+    ddresult = subprocess.Popen(ddcmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate(input=b'smart\n')
     rcode.append(ddresult[1].decode('utf-8'))
     return(rcode)
