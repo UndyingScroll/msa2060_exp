@@ -15,7 +15,7 @@ def metaclean(path):
 
     # zero end of drive
 
-    seek = int(szresult[1].decode('utf-8'))-1024
+    seek = int(szresult[0].decode('utf-8'))-1024
     seekstr = 'seek=' + str(seek) 
     ddcmd = ['sudo', 'dd', 'if=/dev/zero', ofstring,'bs=512', seekstr, 'count=1024']
 
